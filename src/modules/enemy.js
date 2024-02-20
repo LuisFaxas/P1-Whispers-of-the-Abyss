@@ -10,7 +10,7 @@ export class Enemy {
     this.isDead = false;
     this.size = size;
 
-    this.imgSrc = '/P1-Whispers-of-the-Abyss/Resources/Images/Game/Enemy1.webp'
+    this.imgSrc = '../../Resources/Images/Game/Enemy1.webp'
     this.img = new Image()
     this.img.src = this.imgSrc
     this.img.onload = () => {

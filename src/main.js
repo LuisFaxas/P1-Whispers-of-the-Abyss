@@ -32,7 +32,7 @@ window.onload = () => {
 
 
   function update() {
-
+    
     player.update(enemies);
     player.move(isKeyPressed);
     player.preventOutOfBounds(gameWidth, gameHeight);

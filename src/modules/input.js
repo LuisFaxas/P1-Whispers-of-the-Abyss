@@ -18,7 +18,7 @@ function isKeyPressed(key) {
 }
 
 function isAttackKeyPressed() {
-  return keys[' ']
+  return keys[' '] 
 }
 
 export { setupInputListeners, isKeyPressed, isAttackKeyPressed }

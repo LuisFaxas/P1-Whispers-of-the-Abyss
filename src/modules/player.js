@@ -13,6 +13,8 @@ class Player {
     this.isAttacking = false
     this.attackDuration = 500
     this.lastAttackTime = Date.now()
+    this.moveX = 0
+    this.moveY = -1
 
     //animations 64by64px generated here: https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&ears=Big_ears_light&shoulders=Legion_steel&arms=Armour_steel&bauldron=none&bracers=Bracers_steel&gloves=Gloves_steel&chainmail=Chainmail_gray&armour=Plate_steel&cape=Solid_black&belt=Double_Belt_slate&legs=Armour_steel&shoes=Boots_charcoal&weapon=Longsword_longsword&bandana=Mail_steel&hat=Pigface_bascinet_steel
     
@@ -20,21 +22,35 @@ class Player {
     this.spritesheet = new Image()
     let spriteSheetLoaded = false
     this.spritesheet.onload = () => {
-      this.spriteSheetLoaded = true
+     this.spriteSheetLoaded = true
     }
-    this.spritesheet.src = '/P1-Whispers-of-the-Abyss/Resources/Sprites/Custom/IronKnight/ironKnight.png'
+    this.spritesheet.src = '../../Resources/Sprites/Custom/IronKnight/ironKnight.png'
 
-    this.spriteWidth = 64
-    this.spriteHeight = 64
+    this.normalSpriteSize= 64
+    this.attackSpriteSize = 192
 
-    this.numberOfFrames = 24
+    // this.spriteSize = this.isAttacking ? this.attackSpriteSize : this.normalSpriteSize
+    
+    //this.spriteWidth = 64
+    //this.spriteHeight = 64
 
+    this.numberOfFrames = 1
+    
     this.animations = {
-      idle: {row: 21 , frames: 1},
-      walkUp: {row: 9, frames: 9},
-      walkLeft: {row: 10, frames: 9},
-      walkDown: {row: 11, frames: 9},
-      walkRight: {row: 12, frames: 9},
+      idleUp: {row: 8 , frames: this.numberOfFrames},
+      idleLeft: {row: 9 , frames: 1},
+      idleDown: {row: 10 , frames: 1},
+      idleRight: {row: 11 , frames: 1},
+
+      walkUp: {row: 8, frames: 8},
+      walkLeft: {row: 9, frames: 8},
+      walkDown: {row: 10, frames: 8},
+      walkRight: {row: 11, frames: 8},
+
+      attackUp: {row: 7, frames: 6},
+      attackLeft: {row: 8, frames: 6},
+      attackDown: {row: 9, frames: 6},
+      attackRight: {row: 10, frames: 6},
     }
 
     this.currentAnimation = 'idle'
@@ -68,27 +84,38 @@ class Player {
       console.error('Sprite sheet has not loaded');
       return;
     }
+    //const spriteSize = this.isAttacking ? this.attackSpriteSize : this.normalSpriteSize
+    
+    //const drawX = this.x - spriteSize / 2;
+    //const drawY = this.y - spriteSize / 2;
+  const offsetX = this.isAttacking ? (this.attackSpriteSize - this.normalSpriteSize) / 1.3  : 0;
+  const offsetY = this.isAttacking ? (this.attackSpriteSize - this.normalSpriteSize) / 1.3 : 0;
     /*if (this.img.complete) {
       ctx.drawImage(this.img, this.x, this.y, this.size, this.size)
     } else {
       ctx.fillStyle = 'black'
 
       ctx.fillRect(this.x, this.y, this.width, this.height)
+
+       this.spriteSize = this.isAttacking ? this.attackSpriteSize : this.normalSpriteSize
     }*/
+
+    this.spriteSize = this.isAttacking ? this.attackSpriteSize : this.normalSpriteSize
 
     const animation = this.animations[this.currentAnimation]
     ctx.drawImage(
       this.spritesheet,
-      this.frameIndex * this.spriteWidth,
-      animation.row * this.spriteHeight,
-      this.spriteWidth,
-      this.spriteHeight,
-      this.x,
-      this.y,
-      this.spriteWidth,
-      this.spriteHeight,
+      this.frameIndex * this.spriteSize,
+      animation.row * this.spriteSize,
+      this.spriteSize,
+      this.spriteSize,
+      this.x - offsetX ,
+      this.y - offsetY ,
+      this.spriteSize * 1.25,
+      this.spriteSize * 1.5,
     )
   }
+
 
   //updating anim
   updateAnimation(){
@@ -107,17 +134,56 @@ class Player {
     const movingLeft = isKeyPressed('ArrowLeft');
     const movingRight = isKeyPressed('ArrowRight');
 
-    if (movingUp){
-      this.currentAnimation = 'walkUp'
-    } else if (movingDown) {
+    const idlingUp = this.moveY + 1 === 0
+    const idlingDown = this.moveY - 1 === 0
+    const idlingLeft = this.moveX + 1 === 0
+    const idlingRight = this.moveX - 1 === 0
+
+    
+
+    if (this.isAttacking) {
+     if (movingUp) {
+      this.currentAnimation = 'attackUp'
+     }
+     else if (movingLeft) {
+      this.currentAnimation = 'attackLeft'
+     }
+     else if (movingDown) {
+      this.currentAnimation = 'attackDown'
+     }
+     else if (movingRight) {
+      this.currentAnimation = 'attackRight'
+     } else {
+      if (idlingLeft) {
+        this.currentAnimation = 'attackLeft'
+      } else if (idlingRight) {
+        this.currentAnimation = 'attackRight'
+      } else if (idlingUp) {
+        this.currentAnimation = 'attackUp'
+      } else if (idlingDown) {
+        this.currentAnimation = 'attackDown'
+      }
+    }
+    } else {
+    if (movingDown) {
       this.currentAnimation = 'walkDown'
     } else if (movingLeft) {
       this.currentAnimation = 'walkLeft'
     } else if (movingRight) {
       this.currentAnimation = 'walkRight'
+    } else if (movingUp) {
+      this.currentAnimation = 'walkUp'
     } else {
-      this.currentAnimation ='idle'
-    }
+      if (idlingLeft) {
+        this.currentAnimation = 'idleLeft'
+      } else if (idlingRight) {
+        this.currentAnimation = 'idleRight'
+      } else if (idlingUp) {
+        this.currentAnimation = 'idleUp'
+      } else if (idlingDown) {
+        this.currentAnimation = 'idleDown'
+      }
+    }}
   }
 
   attack(enemies) { 
@@ -125,6 +191,8 @@ class Player {
       
     this.isAttacking = true
     console.log('Player Attack!')
+
+    this.frameIndex = 0
 
       enemies.forEach(enemy => {
         if(checkCollision(this, enemy)){
@@ -134,6 +202,8 @@ class Player {
 
       setTimeout(() => {
         this.isAttacking = false
+
+        this.setCurrentAnimation()
         
       }, this.attackDuration)
     }
@@ -162,12 +232,12 @@ class Player {
     if (isKeyPressed('ArrowRight')){
       this.x += this.speed;
     }*/
-    const moveX =(isKeyPressed('ArrowLeft') ? -1 : 0) + (isKeyPressed('ArrowRight') ? 1 : 0)
-    const moveY =(isKeyPressed('ArrowUp') ? -1 : 0) + (isKeyPressed('ArrowDown') ? 1 : 0)
-    const diagonalFactor =(moveX !== 0 && moveY !== 0 ? Math.sqrt(2) : 1)
+    this.moveX =(isKeyPressed('ArrowLeft') ? -1 : 0) + (isKeyPressed('ArrowRight') ? 1 : 0)
+    this.moveY =(isKeyPressed('ArrowUp') ? -1 : 0) + (isKeyPressed('ArrowDown') ? 1 : 0)
+    const diagonalFactor =(this.moveX !== 0 && this.moveY !== 0 ? Math.sqrt(2) : 1)
 
-    this.x += moveX * (this.speed / diagonalFactor)
-    this.y += moveY * (this.speed / diagonalFactor)
+    this.x += this.moveX * (this.speed / diagonalFactor)
+    this.y += this.moveY * (this.speed / diagonalFactor)
   }
 
   //preventing out of bounds D:
