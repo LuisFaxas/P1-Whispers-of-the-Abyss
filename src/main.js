@@ -1,6 +1,6 @@
 // Main game file that initializes and starts the game
 import { setupInputListeners, isKeyPressed } from './modules/input.js';
-import { player } from './modules/player.js'
+import { Player } from './modules/player.js'
 import { isAttackKeyPressed } from './modules/input.js'
 import { Enemy } from './modules/enemy.js'
 
@@ -19,25 +19,20 @@ window.onload = () => {
   const gameWidth = canvas.width;
   const gameHeight = canvas.height;
 
-  player.x = gameWidth / 2;
-  player.y = gameHeight / 2;
+  const player = new Player(gameWidth / 2, gameHeight / 2, 5, 64, 20, 100)
+    
+
+  //player.x = gameWidth / 2;
+  //player.y = gameHeight / 2;
 
   let enemies = [
-    new Enemy(100, 100, 50, 50),
-    new Enemy(200, 200, 50, 50),
+    new Enemy(100, 100, 50, 50, 100),
+    new Enemy(200, 200, 50, 50, 100),
   ]
 
-  const playerImg = player.setImage()
-
-    playerImg.onload = () => {
-      gameLoop()
-    }
-
-    // playerImg.src = player.imgSrc
-    
 
   function update() {
-    
+
     player.update(enemies);
     player.move(isKeyPressed);
     player.preventOutOfBounds(gameWidth, gameHeight);
@@ -52,7 +47,8 @@ window.onload = () => {
 
   function render() {
     ctx.clearRect(0, 0, gameWidth, gameHeight);
-    ctx.drawImage(playerImg, player.x, player.y, player.size, player.size);
+    
+    player.draw(ctx)
 
     enemies.forEach(enemy => {
       enemy.draw(ctx)

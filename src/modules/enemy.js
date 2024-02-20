@@ -7,9 +7,10 @@ export class Enemy {
     this.height = height;
     this.health = 100;
     this.isHit = false;
-    this.size = 100
+    this.isDead = false;
+    this.size = size;
 
-    this.imgSrc = '../../Resources/Images/Game/Enemy1.webp'
+    this.imgSrc = '/P1-Whispers-of-the-Abyss/Resources/Images/Game/Enemy1.webp'
     this.img = new Image()
     this.img.src = this.imgSrc
     this.img.onload = () => {
@@ -38,11 +39,11 @@ export class Enemy {
   //   context.fillRect(this.x, this.y, this.width, this.height);
   // }
 
-  takeDamage(amount) {
+  /*takeDamage(amount) {
     this.health -= amount;
     if (this.health <= 0) {
       this.isHit = true;
       // Handle enemy death
     }
-  }
+  }*/
 }
