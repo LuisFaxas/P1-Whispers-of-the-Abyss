@@ -1,8 +1,8 @@
-import { checkCollision, handleEnemyDamage } from "./combat.js";
+import { checkPlayerAttackCollision, handleEnemyDamage } from "./combat.js";
 import { isKeyPressed, isAttackKeyPressed } from "./input.js";
 
 class Player {
-  constructor(x, y, speed, size, damage, attackRange) {
+  constructor(x, y, speed, size, health, damage, attackRange, imgSrc) {
     this.x = x;
     this.y = y;
     this.speed = speed;
@@ -16,20 +16,27 @@ class Player {
     this.moveX = 0;
     this.moveY = -1;
 
+    this.health = health;
+    this.isHit = false;
+    this.isDead = false;
+
+    this.isInvincible = false;
+    this.invincibleTimer = 0;
+    this.invincibleDuration = 150;
+
     //animations 64by64px generated here: https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&ears=Big_ears_light&shoulders=Legion_steel&arms=Armour_steel&bauldron=none&bracers=Bracers_steel&gloves=Gloves_steel&chainmail=Chainmail_gray&armour=Plate_steel&cape=Solid_black&belt=Double_Belt_slate&legs=Armour_steel&shoes=Boots_charcoal&weapon=Longsword_longsword&bandana=Mail_steel&hat=Pigface_bascinet_steel
 
     this.spritesheet = new Image();
-    let spriteSheetLoaded = false;
+
     this.spritesheet.onload = () => {
       this.spriteSheetLoaded = true;
     };
-    this.spritesheet.src =
-      "../../Resources/Sprites/Custom/IronKnight/ironKnight.png";
+    this.spritesheet.src = imgSrc;
 
     this.normalSpriteSize = 64;
     this.attackSpriteSize = 192;
 
-    this.numberOfFrames = 1;
+    this.numberOfFrames = 24;
 
     this.animations = {
       idleUp: { row: 8, frames: 1 },
@@ -53,25 +60,7 @@ class Player {
     this.tickCount = 0;
     this.ticksPerFrame = 8;
 
-    /*this.img = new Image();
-    this.img.src = imgSrc;
-    this.img.onload = () => {
-      this.imageLoaded = true
-    }*/
   }
-
-  /*const player = {
-  x: 0,
-  y: 0,
-  speed: 2,
-  size: 100,
-
-  attackRange: 100,
-  isAttacking: false,
-  attackDuration: 500,
-  lastAttackTime: 0,
-
-  imgSrc: '/P1-Whispers-of-the-Abyss/Resources/Images/Game/PlayerDamnedCrow.webp',*/
 
   draw(ctx) {
     if (!this.spritesheet.complete) {
@@ -199,6 +188,7 @@ class Player {
   }*/
 
   attack(enemies) {
+    
     if (this.isAttacking ) return;
 
     this.isAttacking = true;
@@ -207,7 +197,7 @@ class Player {
     this.frameIndex = 0;
 
     enemies.forEach((enemy) => {
-      if (checkCollision(this, enemy)) {
+      if (checkPlayerAttackCollision(this, enemy)) {
         handleEnemyDamage(enemy, this.damage); //assuming damage 10
       }
     });
@@ -220,6 +210,12 @@ class Player {
   }
 
   update(enemies) {
+
+    // Check if the invincibility timer has expired
+  if (this.isInvincible && Date.now() - this.invincibleTimer > this.invincibleDuration) {
+    this.isInvincible = false;
+  }
+
     if (isAttackKeyPressed()) {
       this.attack(enemies);
     }
