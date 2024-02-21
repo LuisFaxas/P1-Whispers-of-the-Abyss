@@ -59,7 +59,7 @@ window.onload = () => {
   function gameLoop() {
     update();
     render();
-    requestAnimationFrame(gameLoop);
+    window.requestAnimationFrame(()=> gameLoop());
   }
 
   
