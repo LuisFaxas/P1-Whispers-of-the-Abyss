@@ -49,6 +49,7 @@ function handleEnemyDamage(enemy, damage) {
     if (player.health <= 0) {
       player.isDead = true
       console.log('You are Dead')
+      
     }
 }
 

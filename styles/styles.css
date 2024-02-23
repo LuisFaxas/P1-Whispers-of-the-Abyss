@@ -19,5 +19,16 @@ canvas {
   display: block;
   margin: 20px auto 0;
   background-color: lightgray;
+  border: 1px solid black;
+  /* background-image: url("../Resources/Images/Game/ai/17080192564753rjt1u2s.png"); */
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
+#game-over {
+  visibility: hidden;
+  height: 0;
+  position: fixed;
+  color: white
+
+}

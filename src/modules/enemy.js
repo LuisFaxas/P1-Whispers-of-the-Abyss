@@ -20,7 +20,7 @@ export class Enemy {
     this.isAttacking = false;
     this.attackRange = attackRange;
     this.damage = damage;
-    this.attackCooldown = 2000;
+    this.attackCooldown = 3000;
     this.lastAttackTime = Date.now()
 
     this.spritesheet = new Image();
@@ -170,10 +170,10 @@ export class Enemy {
     if (checkEnemyAttackCollision(player, this)) {
       console.log("Enemy Attacked Player");
       handlePlayerDamage(player, this.damage); //assuming damage 10
-      if (this.health <= 0 && !this.isDead) {
+    /*if (this.health <= 0 && !this.isDead) {
         this.isDead = true;
         this.currentAnimation = 'death';
-        this.frameIndex = 0;}
+        this.frameIndex = 0;}*/
     }
   }
 

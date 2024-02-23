@@ -1,6 +1,7 @@
 import { checkPlayerAttackCollision, handleEnemyDamage } from "./combat.js";
 import { isKeyPressed, isAttackKeyPressed } from "./input.js";
 
+
 class Player {
   constructor(x, y, speed, size, health, damage, attackRange, imgSrc) {
     this.x = x;
@@ -22,7 +23,7 @@ class Player {
 
     this.isInvincible = false;
     this.invincibleTimer = 0;
-    this.invincibleDuration = 150;
+    this.invincibleDuration = 1000;
 
     //animations 64by64px generated here: https://sanderfrenken.github.io/Universal-LPC-Spritesheet-Character-Generator/#?body=Body_color_light&head=Human_male_light&ears=Big_ears_light&shoulders=Legion_steel&arms=Armour_steel&bauldron=none&bracers=Bracers_steel&gloves=Gloves_steel&chainmail=Chainmail_gray&armour=Plate_steel&cape=Solid_black&belt=Double_Belt_slate&legs=Armour_steel&shoes=Boots_charcoal&weapon=Longsword_longsword&bandana=Mail_steel&hat=Pigface_bascinet_steel
 
